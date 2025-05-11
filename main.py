@@ -17,6 +17,7 @@ bottom = [BLANK_CHAR] * 16
 isGameOver = 0
 jumpIndex = 0
 toNextSpawn = 0
+frameCounter = 0
 
 #init lcd
 i2c = I2C(0, sda=Pin(SDA_PIN), scl=Pin(SCL_PIN), freq=400000)
@@ -94,6 +95,8 @@ def nextFrame():
     lcd.putstr(toLCDString())
 
 def jump():
+    fill(0, 0, BLANK_CHAR )
+    global jumpIndex
     jumpIndex = 3
 
 def spawn():
@@ -101,33 +104,40 @@ def spawn():
     fill(15, 0, FULL_CHAR)
     toNextSpawn = random.randint(3, 5)
 
+
 while True:
     while (isGameOver==0):
-        lcd.clear()
-        nextFrame()
-        if(isGameOver==1):
+        if(frameCounter == 0):
             lcd.clear()
-            lcd.putstr("Game over!")
-            sleep(2)
-            lcd.clear()
-            lcd.putstr("Press to start!")
-            break
-        if (jumpIndex>0): 
-            jumpIndex -= 1
-        toNextSpawn-=1
-        #print(toNextSpawn)
+            nextFrame()
+            if(isGameOver==1):
+                lcd.clear()
+                lcd.putstr("Game over!")
+                sleep(1)
+                lcd.clear()
+                lcd.putstr("Press to start!")
+                break
+            if (jumpIndex>0): 
+                jumpIndex -= 1
+            toNextSpawn-=1
+            frameCounter = 20
+            #print(toNextSpawn)
+        
         if(button.value()==1):
             jump()
-        sleep(1)
+        frameCounter-=1
+        sleep(0.025)
+
     while (True):
         #change to Button
-        if():
+        if(button.value()==1):
             top = [BLANK_CHAR] * 16
             bottom = [BLANK_CHAR] * 16
             isGameOver=0
             jumpIndex=0
             toNextSpawn=0
             break
+
 
 
 
